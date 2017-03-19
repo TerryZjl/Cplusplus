@@ -28,6 +28,21 @@ public:
 		}
 	}
 
+	void sort()
+	{
+		int i = 0;
+		int j = 0;
+		for (i = 0; i < _size-1; i++)
+		{
+			for (j = 0; j < _size - i-1; j++)
+			{
+				if (_a[j]>_a[j+1])
+				{
+					swap(_a[j], _a[j + 1]);
+				}
+			}
+		}
+	}
 	void CheckCapacity()
 	{
 		if (_size == _capacity)
@@ -98,12 +113,12 @@ int main()
 {
 	Seqlinst a;
 	a.Insert(0, 1);
-	a.Insert(1, 2);
+	a.Insert(1, 8);
 	a.Insert(2, 3);
-	a.Insert(3, 4);
+	a.Insert(3, 6);
 	a.Insert(4, 5);
-	a.Erase(1);
-	int ret = a.Find(3);
+	//a.Erase(1);
+	/*int ret = a.Find(3);
 	if (ret == -1)
 	{
 		cout << "no" << endl;
@@ -112,6 +127,8 @@ int main()
 	{
 		cout << "pos:[" << ret << "]" << endl;
 	}
+	*/
+	a.sort();
 	a.print();
 	return 0;
 }
