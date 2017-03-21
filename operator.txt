@@ -1,0 +1,136 @@
+
+//运算符重载
+class Complex
+{
+private:
+	double _real;
+	double _image;
+public:
+	Complex(double real = 0.0, double image = 0.0)
+	{
+		cout << "Complex()" << endl;
+	    _image = image;
+		_real = real;
+	}
+	Complex(Complex& com)    //用来对创建同类对象对其初始化时调用
+	{
+		cout << "Complex(Complex &com)" << endl;
+		_image = com._image;
+		_real = com._real;
+	}
+	~Complex()
+	{
+		cout << "~Complex()" << endl;
+	}
+
+	//Complex ADD(Complex& com)
+	//{
+	//	Complex tmp;
+	//	tmp._image = this->_image + com._image;
+	//	tmp._real = this->_real + com._real;
+	//	return tmp;
+	//}
+//加法运算符重载
+	Complex operator+(Complex& com)
+	{
+		Complex tmp;
+		tmp._image = this->_image + com._image;
+		tmp._real = this->_real + com._real;
+		return tmp;    //这里是返回值，返回时还要调用用一次拷贝构造函数，tmp在函数调用完就销毁了，所以这里要调用拷贝构造函数创建一个相同的对象来返回tmp的值，
+	}  
+
+//赋值运算符重载
+	Complex& operator=(const Complex& com)   //返回的还是d1自己，所以要返回引用，否则的话会返回时会调用拷贝构造函数。
+	{
+		if (this != &com)
+		{
+			this->_image = com._image;
+			this->_real = com._real;
+		}
+		return *this;  //这里是返回引用，就不用再调用拷贝构造函数来创建一个对象返回其值，引用是其对象的别名就可直接返回。
+	}
+
+//减法运算符重载
+	Complex operator-(Complex& com)
+	{
+		Complex tmp;
+		tmp._image = this->_image - com._image;
+		tmp._real = this->_real - com._real;
+		return tmp;
+	}
+
+// 运算符++和--有前置和后置两种形式，如果不区分前置和后置，则使用operator++( )或operator--( )即可；
+//否则，要使用operator++( )或operator--( )来重载前置运算符
+//使用operator++(int)或operator--(int)来重载后置运算符，
+//调用时，后置运算符重载函数比前置运算符重载函数多了一个int类型的参数，这个参数只是为了区别前置和后置运算符，此外没有任何作用。
+//所以在调用后置运算符重载函数时，int类型的实参可以取任意值。
+
+//前置++ 运算符重载
+	Complex& operator++()
+	{
+		++this->_image;
+		++this->_real;
+		return *this;
+	}
+//后置++ 运算符重载
+	Complex operator++(int)
+	{
+		Complex tmp(*this);
+		this->_image++;
+		this->_real++;
+		return tmp;
+	}
+//前置-- 运算符重载
+	Complex& operator--()
+	{
+		--this->_image;
+		--this->_real;
+		return *this;
+	}
+//后置-- 运算符重载
+	Complex operator--(int)
+	{
+		Complex tmp(*this);
+		this->_image--;
+		this->_real--;
+		return tmp;
+	}
+//取地址操作符重载(这两个一般不用重新定义，这和默认提供的一样)
+	Complex* operator&()
+	{
+		return this;
+	}
+//取const修饰的运算符重载
+	const Complex* operator&() const
+	{
+		return this;
+	}
+
+
+	void print()
+	{
+		cout << _real << "+" << _real << "i" << endl;
+	}
+
+};
+
+
+int main()
+{ 
+	Complex d1(1.0,1.0);
+	Complex d2(2.0, 2.0);
+	Complex d3;
+	//d3 = d1 + d2;
+	//d1.operator=(d2);
+	//d1 = d2;
+	//d1.print();
+	//d3.print();
+	//d1 = d1>>1;
+	//d1.print();
+	d3 = d2++;
+	d2.print();
+	d3.print();
+	cout << &d1 << endl;
+	return 0;
+}
+
