@@ -24,21 +24,27 @@ public:
 	void Copy(Node* head, Node*& newHead, Node*& newTail);
 	Linklist(const Linklist& a)
 	{
-		if (a._head == NULL)
-		{
+		/*	if (a._head == NULL)
+			{
 			_head = _tail = NULL;
-		}
-		else
-		{
+			}
+			else
+			{
 			_head = new Node(a._head->date);
 			_tail = _head;
 			Node* cur = a._head->next;
 			while (cur)
 			{
-				_tail->next = new Node(cur->date);
-				cur = cur->next;
-				_tail = _tail->next;
+			    _tail->next = new Node(cur->date);
+			    cur = cur->next;
+			    _tail = _tail->next;
 			}
+			}*/
+		Node* cur = a._head;
+		while (cur)
+		{
+			PushBank(cur->date);
+			cur = cur->next;
 		}
 	}
 	~Linklist()
