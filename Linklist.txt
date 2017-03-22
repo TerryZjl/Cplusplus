@@ -1,0 +1,118 @@
+#include<iostream>
+using namespace std;
+
+typedef int Datatype;
+
+struct Node
+{
+	Datatype date;
+	Node* next;
+	Node(Datatype x)
+		:date(x)
+		,next(NULL)
+	{}
+};
+
+class Linklist
+{
+public:
+	Linklist()
+		:_head(NULL)
+		, _tail(NULL)
+	{
+	}
+	Linklist(const Linklist& a)
+	{
+	}
+	~Linklist()
+	{
+		if (_head != NULL)
+		{
+			Node* cur = _head;
+			Node* del = _head;
+			while (cur)
+			{
+				del = cur;
+				cur = cur->next;
+				delete del;
+			}
+			_head = _tail = NULL;
+		}
+	}
+	void Destory()
+	{
+		Node* tmp = _head;
+		Node* del = _tail;
+		while (tmp->next->next!=NULL)
+		{
+			tmp = tmp->next;
+		}
+		_tail = tmp;
+		_tail->next = del->next;
+		delete del;
+	}
+	Linklist& operator=(const Linklist& s);
+	void PopBack()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+		    Destory();
+		}
+	}
+
+	void PushFront(Datatype x);
+	{
+
+	}
+	void PopFront();
+
+	void PushBank(Datatype x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			_tail->next = new Node(x);
+			_tail = _tail->next;
+		}
+	}
+	void Print()
+	{
+		if (_head != NULL)
+		{
+			Node* cur = _head;
+			while (cur)
+			{
+				cout << cur->date << "->";
+				cur = cur->next;
+			}
+			cout << "NULL"<<endl;
+		}
+	}
+private:
+	Node* _head;
+	Node* _tail;
+};
+
+int main()
+{
+	Linklist l1;
+	l1.PushBank(1);
+	l1.PushBank(2);
+	l1.PushBank(3);
+	l1.PushBank(4);
+
+	l1.Print();
+	return 0;
+}
