@@ -21,8 +21,25 @@ public:
 		, _tail(NULL)
 	{
 	}
+	void Copy(Node* head, Node*& newHead, Node*& newTail);
 	Linklist(const Linklist& a)
 	{
+		if (a._head == NULL)
+		{
+			_head = _tail = NULL;
+		}
+		else
+		{
+			_head = new Node(a._head->date);
+			_tail = _head;
+			Node* cur = a._head->next;
+			while (cur)
+			{
+				_tail->next = new Node(cur->date);
+				cur = cur->next;
+				_tail = _tail->next;
+			}
+		}
 	}
 	~Linklist()
 	{
@@ -51,7 +68,17 @@ public:
 		_tail->next = del->next;
 		delete del;
 	}
-	Linklist& operator=(const Linklist& s);
+	Linklist& operator=(Linklist s)
+	{
+		Swap(s);
+		return *this;
+	}
+
+	void Swap(Linklist& s)
+	{
+		swap(_head, s._head);
+		swap(_tail, s._tail);
+	}
 	void PopBack()
 	{
 		if (_head == NULL)
@@ -69,11 +96,38 @@ public:
 		}
 	}
 
-	void PushFront(Datatype x);
+	void PushFront(Datatype x)
 	{
-
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* tmp = new Node(x);
+			tmp->next = _head;
+			_head = tmp;
+		}
 	}
-	void PopFront();
+	void PopFront()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _head;
+			_head = _head->next;
+			delete del;
+		}
+		
+	}
 
 	void PushBank(Datatype x)
 	{
@@ -100,6 +154,55 @@ public:
 			cout << "NULL"<<endl;
 		}
 	}
+
+	void Insert(Node* pos, Datatype x)
+	{
+		if (pos == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* cur = new Node(x);
+			Node* tmp = pos->next;
+			pos->next = cur;
+			cur->next = tmp;
+			swap(pos->date, cur->date);
+		}
+	}
+	void Erase(Node* pos)
+	{
+		if (pos == NULL)
+		{
+			return;
+		}
+		else if (pos->next == NULL)
+		{
+			Destory();
+		}
+		else
+		{
+			swap(pos->date, pos->next->date);
+			Node* del = pos->next;
+			pos->next = pos->next->next;
+			delete del;
+		}
+	}
+
+	Node* Find(Datatype x)
+	{
+		Node* cur = _head;
+		while (cur)
+		{
+			if (cur->date == x)
+			{
+				return cur;
+			}
+			cur = cur->next;
+		}
+		return NULL;
+	}
+
 private:
 	Node* _head;
 	Node* _tail;
@@ -108,11 +211,44 @@ private:
 int main()
 {
 	Linklist l1;
+	//l1.PopBack();
+	//l1.PushFront(5);
+	//l1.PopBack();
 	l1.PushBank(1);
 	l1.PushBank(2);
 	l1.PushBank(3);
 	l1.PushBank(4);
-
+	//l1.PushFront(6);
+	//l1.PopBack();
 	l1.Print();
+	Linklist l2(l1);
+	//l2.PushBank(2); 
+	//l2.PushBank(2);
+	//l2.PushBank(2);
+	l2.Print();
+
+	//l2 = l1;
+	//l2.Print();
+
+	//Node* ret = l1.Find(0);
+	//if (ret == NULL)
+	//{
+	//	cout << "no" << endl;
+	//}
+	//else
+	//{
+	//	cout << "yes" << endl;
+	//}
+
+	//Node* pos = l1.Find(4);
+	//l1.Erase(pos);
+	//l1.Insert(pos, 5);
+	//l1.Print();
+
 	return 0;
 }
+
+
+
+
+
