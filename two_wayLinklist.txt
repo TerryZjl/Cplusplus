@@ -123,44 +123,79 @@ public:
 
 	void Insert(Node* pos, Datatype x)
 	{
+		//assert(pos);
+		//if (pos == _head)
+		//{
+		//	Node* tmp = _head;
+		//	_head = new Node(x);
+		//	tmp->prev = _head;
+		//	_head->next = tmp;
+		//}
+		//else
+		//{
+		//	Node* tmp = new Node(x);
+		//	tmp->prev = pos->prev;
+		//	pos->prev->next = tmp;
+		//	tmp->next = pos;
+		//}
 		assert(pos);
 		if (pos == _head)
 		{
-			Node* tmp = _head;
-			_head = new Node(x);
-			tmp->prev = _head;
-			_head->next = tmp;
+			PushFront(x);
 		}
 		else
 		{
+			Node* prev = pos->prev;
+			Node* next = pos;
 			Node* tmp = new Node(x);
-			tmp->prev = pos->prev;
-			pos->prev->next = tmp;
-			tmp->next = pos;
+
+			tmp->next = next;
+			next->prev = tmp;
+
+			tmp->prev = prev;
+			prev->next = tmp;
 		}
 	}
 	void Erase(Node* pos)
 	{
+		//assert(pos);
+		//if (pos == _head)
+		//{
+		//	Node* del = _head;
+		//	_head = _head->next;
+		//	_head->prev = NULL;
+		//	delete del;
+		//}
+		//else if (pos->next == NULL)
+		//{
+		//	Node* del = pos;
+		//	_tail = pos->prev;
+		//	_tail->next = NULL;
+		//	delete del;
+		//}
+		//else
+		//{
+		//	Node* del = pos;
+		//	pos->next->prev = pos->prev;
+		//	pos->prev->next = pos->next;
+		//	delete del;
+		//}
 		assert(pos);
 		if (pos == _head)
 		{
-			Node* del = _head;
-			_head = _head->next;
-			_head->prev = NULL;
-			delete del;
+			PopFront();
 		}
 		else if (pos->next == NULL)
 		{
-			Node* del = pos;
-			pos->prev->next = pos->next;
-			delete del;
+			PopBack();
 		}
 		else
 		{
-			Node* del = pos;
-			pos->next->prev = pos->prev;
-			pos->prev->next = pos->next;
-			delete del;
+			Node* prev = pos->prev;
+			Node* next = pos->next;
+			delete pos;
+			prev->next = next;
+			next->prev = prev;
 		}
 	}
 
@@ -203,8 +238,10 @@ int main()
 	//
 
 	l1.Print();
-	Node* ret = l1.Find(2);
+	Node* ret = l1.Find(4);
+	//l1.Insert(ret, 6);
 	l1.Erase(ret);
+	l1.PushBack(5);
 	l1.Print();
 	//if (ret == NULL)
 	//{
