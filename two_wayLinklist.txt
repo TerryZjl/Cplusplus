@@ -198,7 +198,27 @@ public:
 			next->prev = prev;
 		}
 	}
+	void ReverseList()
+	{
+		//Node* cur = _head;
 
+		//while (cur)
+		//{
+		//	Node* Next = cur->next;
+		//	swap(cur->next, cur->prev);
+		//	cur = Next;
+		//}
+		//swap(_head, _tail);
+
+		Node* head = _head;
+		Node* tail = _tail;
+		while (head != tail && head != tail->next)
+		{
+			swap(head->data, tail->data);
+			head = head->next;
+			tail = tail->prev;
+		}
+	}
 	void Print()
 	{
 		if (_head == NULL)
@@ -240,8 +260,9 @@ int main()
 	l1.Print();
 	Node* ret = l1.Find(4);
 	//l1.Insert(ret, 6);
-	l1.Erase(ret);
-	l1.PushBack(5);
+	//l1.Erase(ret);
+	//l1.PushBack(5);
+	l1.ReverseList();
 	l1.Print();
 	//if (ret == NULL)
 	//{
