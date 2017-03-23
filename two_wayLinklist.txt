@@ -1,0 +1,219 @@
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+typedef int Datatype;
+
+struct Node
+{
+	Datatype data;
+	Node* next;
+	Node* prev;
+	Node(Datatype x)
+		:data(x)
+		, next(NULL)
+		, prev(NULL)
+	{}
+};
+
+class Linklist
+{
+	typedef Node Type;
+public:
+
+	Linklist()
+		:_head(NULL)
+		, _tail(NULL)
+	{
+	}
+
+    ~Linklist()
+	{
+		while (_head != NULL)
+		{
+			Node* del = _head;
+			_head = _head->next;
+			delete del;
+		}	
+
+	}
+    void PushBack(Datatype x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail= new Node(x);
+		}
+		else
+		{
+			Node* tmp = _tail;
+			_tail = new Node(x);
+			_tail->prev = tmp;
+			tmp->next = _tail;
+		}
+	}
+
+	void PopBack()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _tail;
+			_tail = _tail->prev;
+			_tail->next = NULL;
+			delete del;
+		}
+	}
+
+	void PopFront()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _head;
+			_head = _head->next;
+			_head->prev = NULL;
+			delete del;
+		}
+
+	}
+	void PushFront(Datatype x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* tmp = _head;
+			_head = new Node(x);
+			tmp->prev = _head;
+			_head->next = tmp;
+		}
+	}
+
+	Node* Find(Datatype x)
+	{
+		Node* cur = _head;
+		while (cur)
+		{
+			if (cur->data == x)
+			{
+				return cur;
+			}
+			cur = cur->next;
+		}
+		return NULL;
+	}
+
+	void Insert(Node* pos, Datatype x)
+	{
+		assert(pos);
+		if (pos == _head)
+		{
+			Node* tmp = _head;
+			_head = new Node(x);
+			tmp->prev = _head;
+			_head->next = tmp;
+		}
+		else
+		{
+			Node* tmp = new Node(x);
+			tmp->prev = pos->prev;
+			pos->prev->next = tmp;
+			tmp->next = pos;
+		}
+	}
+	void Erase(Node* pos)
+	{
+		assert(pos);
+		if (pos == _head)
+		{
+			Node* del = _head;
+			_head = _head->next;
+			_head->prev = NULL;
+			delete del;
+		}
+		else if (pos->next == NULL)
+		{
+			Node* del = pos;
+			pos->prev->next = pos->next;
+			delete del;
+		}
+		else
+		{
+			Node* del = pos;
+			pos->next->prev = pos->prev;
+			pos->prev->next = pos->next;
+			delete del;
+		}
+	}
+
+	void Print()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else
+		{
+			Node* cur = _head;
+			while (cur)
+			{
+				cout << cur->data<<"->";
+				cur = cur->next;
+ 			}
+			cout << "NULL" << endl;
+		}
+	}
+private:
+	Type* _head;
+	Type* _tail;
+
+};
+
+int main()
+{
+	Linklist l1;
+
+	l1.PushBack(1);
+	l1.PushBack(2);
+	l1.PushBack(3);
+	l1.PushBack(4);
+	//l1.PopBack();
+	//l1.PushFront(2);
+	//l1.PushFront(3);
+	//l1.PushFront(4);
+	//l1.PopFront();
+	//
+
+	l1.Print();
+	Node* ret = l1.Find(2);
+	l1.Erase(ret);
+	l1.Print();
+	//if (ret == NULL)
+	//{
+	//	cout << "no" << endl;
+	//}
+	//else
+	//{
+	//	cout << "yes" << endl;
+	//}
+
+	return 0;
+}
