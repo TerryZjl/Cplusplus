@@ -15,14 +15,24 @@ private:
 	int _age;
 };
 
-class student:private person
-//class student :public person
+//	class student:private person
+class student :public person
 {
 protected:
 	int _num;
 };
 int main()
 {
+	//person b;
 	student a;
+
+	//b = a;    //yes
+	//a = b; //no
+
+	//person* b = &a;
+	person& b = a;
+	//student* a = &b;
+	//student& a = (student&)b;
+
 	return 0;
 }
