@@ -1,0 +1,28 @@
+#include<iostream>
+using namespace std;
+
+class person
+{
+public:
+	void Display()
+	{
+		cout << "person" << endl;
+	}
+
+protected:
+	string _name;
+private:
+	int _age;
+};
+
+class student:private person
+//class student :public person
+{
+protected:
+	int _num;
+};
+int main()
+{
+	student a;
+	return 0;
+}
