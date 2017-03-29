@@ -1,0 +1,36 @@
+#include<iostream>
+using namespace std;
+
+class Person
+{
+public:
+	virtual void BuyTickets()
+	{
+		cout << "ÂòÈ«Æ±" << endl;
+	}
+};
+
+class Student:public Person
+{
+public:
+	virtual void BuyTickets()
+	{
+		cout << "Âò°ëÆ±" << endl;
+	}
+};
+
+void Fun(Person& p)
+{
+	p.BuyTickets();
+}
+
+int main()
+{
+	Person p;
+	Student s;
+
+	Fun(p);
+	Fun(s);
+	system("pause");
+	return 0;
+}
