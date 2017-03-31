@@ -1,0 +1,80 @@
+
+//多重继承
+#include<iostream>
+using namespace std;
+
+class Base1
+{
+public:
+	virtual void func1()
+	{
+		cout << "Base1::fun1" << endl;
+	}
+	virtual void func2()
+	{
+		cout << "Base1::func2" << endl;
+	}
+public:
+	int b1;
+};
+class Base2
+{
+public:
+	virtual void func1()
+	{
+		cout << "Base2::fun1" << endl;
+	}
+	virtual void func2()
+	{
+		cout << "Base2::func2" << endl;
+	}
+public:
+	int b2;
+};
+
+class Derive:public Base1, public Base2
+{
+public:
+	virtual void func1()
+	{
+		cout << "Derive::func1()"<<endl;
+	}
+	virtual void func3()
+	{
+		cout << "Derive::func3()" << endl;
+	}
+
+private:
+	int b;
+};
+
+typedef void(*FUNC)();
+
+void PrintVtable(int* VTable)
+{
+	cout << "虚表地址>" << VTable << endl;
+
+	for (int i = 0; VTable[i] != 0;++i)
+	{
+		printf("第%d个虚函数地址：0X%x,->", i, VTable[i]);
+		FUNC f = (FUNC)VTable[i];
+		f();
+	}
+	cout << endl;
+}
+
+int main()
+{
+	Derive d1;
+
+	int* VTable = (int*)(*(int*)&d1);
+	PrintVtable(VTable);
+
+	VTable = (int*)(*((int*)&d1 + sizeof(Base1) / 4));
+	PrintVtable(VTable);
+	//system("pause");
+	return 0;
+}
+
+
+
