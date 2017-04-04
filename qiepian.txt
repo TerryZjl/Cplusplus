@@ -1,0 +1,49 @@
+
+#include<iostream>
+using namespace std;
+
+class person
+{
+public:
+	void Display()
+	{
+		cout << "person()" << endl;
+	}
+
+protected:
+	string _name;
+private:
+	int _age;
+};
+
+class student :public person
+{
+public:
+	int _num;
+};
+int main()
+{
+	person b;
+	student a;
+	
+	//子类对象可以赋值给父类对象(切片)
+	//b = a;    //yes
+
+	//父类对象不可以赋值给子类对象
+	//a = b; //no
+
+	//父类指针/引用可以指向子类对象
+	person* p1 = &a;
+	person& p2 = a;
+
+	
+	//子类指针/引用不能指向父类对象(可以通过强制类型转换来指向)
+	//student* s = &b;            //no
+	student* s1 = (student*)&b;    //yes
+	//student& s = b;             //no
+	student& s2 = (student&)b;   //yes
+
+//	s1->_num = 10;
+	s2._num = 20;
+	return 0;
+}
