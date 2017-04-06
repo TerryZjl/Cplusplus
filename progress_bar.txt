@@ -1,0 +1,20 @@
+#include<stdio.h>
+#include<windows.h>
+
+int main()
+{
+	char buffer[51] = { '\0' };
+	char ch[] = { '|', '/', '-', '\\' };
+	int i = 0;
+	while (i <= 50)
+	{
+		printf("[%-50s]%d%%[%c]\r", buffer, 2 * i, ch[i % 4]);
+		fflush(stdout);
+		buffer[i] = '#';
+		i++;
+		buffer[i] = '\0';
+		Sleep(100);
+	}
+	printf("\n");
+	return 0;
+}
