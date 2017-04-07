@@ -1,36 +1,89 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
-
-class Person
+class First           // 声明基类
 {
 public:
-     virtual void BuyTickets()
-	{
-		cout << "买全票" << endl;
-	}
-};
+	First()
+		:a(0)
+		, b(0)
+	{}
 
-class Student:public Person
+	First(int x, int y)
+		:a(x)
+		, b(y)
+	{}
+
+	~First()
+	{}
+
+	void print()
+	{
+		cout << "\n a=" << a << "b = " << b;
+	}
+private:
+	int a, b;
+};
+class Second : public First   //声明基类Frist的公有派生类Second
 {
 public:
-	virtual void BuyTickets()
-	{
-		cout << "买半票" << endl;
-	}
-};
+	Second()
+		:First(1,1)
+		,c(0)
+		,d(0)
+	{}
 
-void Fun(Person& p)
+	Second(int x , int y)
+		:First(x+1, y+1)
+		, c(x)
+		, d(y)
+	{}
+
+	Second(int x, int y, int m, int n)
+		:First(m, n)
+		, c(x)
+		, d(y)
+	{}
+
+	~Second()
+	{}
+	void print()
+	{
+		First::print();
+		cout << " c=" << c << " d= " << d;
+	}
+private:
+	int c, d;
+};
+class Third:public Second           //声明Second的公有派生类Third
 {
-	p.BuyTickets();
-}
+public:
+	Third()
+		:e(0)
+	{}
+	Third(int x, int y)
+		:Second(x,y)
+	{}
+	Third(int x, int y, int z,int m, int n)
+		:Second(x, y,m,n)
+		, e(z)
+	{}
+
+	~Third()
+	{}
+
+	void print()
+	{
+		Second::print();
+		cout << " e=" << e;
+	}
+
+private:
+	int e;
+};
 
 int main()
 {
-	Person p;
-	Student s;
+	Third l(3, 2,1);
+	l.print();
 
-	Fun(p);
-	Fun(s);
-	system("pause");
-	return 0;
 }
