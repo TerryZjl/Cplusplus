@@ -1,0 +1,179 @@
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+template<typename T>
+class Seqlist
+{
+public:
+	Seqlist()
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{}
+	void _CheckCapacity()
+	{
+		if (_capacity == _size)
+		{
+			_capacity = _capacity * 2 + 3;
+			T* tmp = new T[_capacity];
+
+			if (_a)
+			{
+				memcpy(tmp, _a, sizeof(T)*_size);
+				delete[] _a;
+			}
+			_a = tmp;
+		}
+	}
+	Seqlist(const Seqlist<T>& s)
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{
+		while (_size < s._size)
+		{
+			PushBack(s._a[_size]);
+		}
+		_capacity = s._capacity;
+	}
+
+	Seqlist<T>& operator=(Seqlist<T> s)
+	{
+		swap(_a, s._a);
+		swap(_size, s._size);
+		swap(_capacity, s._capacity);
+		return *this;
+	}
+
+	void PushBack(const T& x)
+	{
+		_CheckCapacity();
+		_a[_size] = x;
+		_size++;
+	}
+
+	void PopBack()
+	{
+		if (_size > 0)
+		{
+			--_size;
+		}
+			
+	}
+
+	~Seqlist()
+	{
+		if (_a != NULL)
+		{
+			delete[] _a;
+			_size = _capacity = 0;
+			_a = NULL;
+		}
+	}
+
+	T& Front()
+	{
+		return _a[0];
+	}
+
+	T& Back()
+	{
+		return _a[_size-1];
+	}
+	size_t size()
+	{
+		return _size;
+	}
+
+	bool Empty()
+	{
+		return _size == 0;
+	}
+
+	void print();
+private:
+	T* _a;
+	size_t _size;
+	size_t _capacity;
+};
+
+template<typename T>
+void Seqlist<T>::print()
+{
+	for (size_t i = 0; i < _size; i++)
+	{
+		cout << _a[i] << " ";
+	}
+	cout << endl;
+}
+
+template<typename T, typename Container = Seqlist<T>>   //第二个参数为缺省参数
+class Stack
+{
+public:
+	void Push(const T& x)
+	{
+		_con.PushBack(x);
+	}
+
+	void Pop()
+	{
+		_con.PopBack();
+	}
+
+	T& Front()
+	{
+		return _con.Front();
+	}
+
+	T& Back()
+	{
+		return _con.Back();
+	}
+	size_t size()
+	{
+		return _con.Size();
+	}
+	bool Empty()
+	{
+		return _con.Empty();
+	}
+private:
+	Container _con;
+};
+
+
+
+void TestStack()
+{
+	Stack<int ,Seqlist<int>> s;
+	s.Push(1);
+	s.Push(2);
+	s.Push(3);
+
+	while (!s.Empty())
+	{
+		cout << s.Back()<<" ";
+		s.Pop();
+	}
+	cout << endl;
+}
+
+int main()
+{
+	TestStack();
+	//Seqlist<string> s;
+	//s.PushBack("1");
+	//s.PushBack("2");
+	//s.PushBack("3");
+	//s.print();
+	//Seqlist<> s1(s);
+	//Seqlist<int> s2;
+	////s2 = s;
+	//s2.print();
+
+	return 0;
+}
+
