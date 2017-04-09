@@ -1,0 +1,374 @@
+#include<iostream>
+#include<string>
+#include<assert.h>
+using namespace std;
+
+
+
+//顺序表
+template<typename T>
+class Seqlist
+{
+public:
+	Seqlist()
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{}
+	void _CheckCapacity()
+	{
+		if (_capacity <= _size)
+		{
+			_capacity = _capacity * 2 + 3;
+			//_a = (T*)realloc(_a, sizeof(T)*_capacity);
+	        T* tmp = new T[_capacity];
+			//memcpy(tmp, _a, sizeof(T)*_size);
+
+			if (_a)
+			{
+			    
+				for (size_t i = 0; i < _size; i++)
+				{
+					tmp[i] = _a[i];
+				}
+				delete[] _a;
+			}
+			
+			_a = tmp;
+		}
+	}
+	Seqlist(const Seqlist<T>& s)
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{
+		while (_size < s._size)
+		{
+			PushBack(s._a[_size]);
+		}
+		_capacity = s._capacity;
+	}
+
+	Seqlist<T>& operator=(Seqlist<T> s)
+	{
+		swap(_a, s._a);
+		swap(_size, s._size);
+		swap(_capacity, s._capacity);
+		return *this;
+	}
+
+	void PopFront()
+	{
+		assert(_size);
+		int i = 0;
+		while (i < _size)
+		{
+			_a[i] = _a[i + 1];
+			i++;
+		}
+		_size--;
+	}
+
+	void PushBack(const T& x)
+	{
+		_CheckCapacity();
+		_a[_size] = x;
+		_size++;
+	}
+
+	void PopBack()
+	{
+		if (_size > 0)
+		{
+			--_size;
+		}
+			
+	}
+
+	~Seqlist()
+	{
+		if (_a != NULL)
+		{
+			delete[] _a;
+			_size = _capacity = 0;
+			_a = NULL;
+		}
+	}
+
+	T& Front()
+	{
+		return _a[0];
+	}
+
+	T& Back()
+	{
+		return _a[_size-1];
+	}
+	size_t size()
+	{
+		return _size;
+	}
+
+	bool Empty()
+	{
+		return _size == 0;
+	}
+
+	void print();
+private:
+	T* _a;
+	size_t _size;
+	size_t _capacity;
+};
+
+template<typename T>
+void Seqlist<T>::print()
+{
+	for (size_t i = 0; i < _size; i++)
+	{
+		cout << _a[i] << " ";
+	}
+	cout << endl;
+}
+
+
+//双链表
+#include<iostream>
+using namespace std;
+
+template<typename T>
+struct ListNode
+{
+	ListNode<T>* _next;
+	ListNode<T>* _prve;
+	T _date;
+	ListNode(const T& x)
+		:_date(x)
+		, _next(NULL)
+		, _prve(NULL)
+	{}
+	
+};
+
+template<typename T>
+class List
+{
+typedef ListNode<T> Node;
+public:
+	List()
+		:_head(NULL)
+		, _tail(NULL)
+	{}
+
+	List(const List<int>& l)
+		:_head(NULL)
+		, _tail(NULL)
+	{
+		Node* tmp = l._head;
+		while (tmp)
+		{
+			PushBack(tmp->_date);
+			tmp = tmp->_next;
+		}
+	}
+
+	List<T>& operator=(List<T> s)
+	{
+		swap(_head, s._head);
+		swap(_tail, s._tail);
+		return *this;
+	}
+
+	~List()
+	{
+		clear();
+	}
+
+	void clear()
+	{
+		Node* del = _head;
+		while (del)
+		{
+			Node* next = del->_next;
+			delete del;
+			del = next;
+		}
+		_head = _tail = NULL;
+	}
+
+	void PushBack(const T& x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* _tmp = new Node(x);
+			_tail->_next = _tmp;
+			_tmp->_prve= _tail;
+			_tail = _tmp;
+		}
+	}
+
+	void PopBack()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->_next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _tail;
+			_tail = del->_prve;
+			_tail->_next = NULL;
+			delete del;
+		}
+	}
+
+	void PushFront(const T& x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* tmp = new Node(x);
+			tmp->_next = _head;
+			tmp->_prve = NULL;
+			_head = tmp;
+		}
+	}
+
+	void PopFront()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->_next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _head;
+			_head = del->_next;
+			_head->_prve = NULL;
+			delete del;
+		}
+	}
+	T& Back()
+	{
+		assert(_tail);
+		return _tail->_date;
+	}
+	T& Front()
+	{
+		assert(_head);
+		return _head->_date;
+	}
+	size_t Size()
+	{
+		Node* cur = _head;
+		
+		size_t cout = 0;
+		while (cur)
+		{
+			cout++;
+			cur = cur->_next;
+		}
+		return _cout;
+	}
+	bool Empty()
+	{
+		return _head == NULL;
+	}
+
+	void print()
+	{
+		Node* tmp = _head;
+		while (tmp)
+		{
+			cout << tmp->_date<<" ";
+			tmp = tmp->_next;
+		}
+		cout << endl;
+	}
+private:
+	Node* _head;
+	Node* _tail;
+};
+
+
+
+//栈适配器
+template<typename T, typename Container = Seqlist<T>>   //第二个参数为缺省参数
+class Stack
+{
+public:
+	void Push(const T& x)
+	{
+		_con.PushBack(x);
+	}
+
+	void Pop()
+	{
+		_con.PopBack();
+	}
+
+	T& Front()
+	{
+		return _con.Front();
+	}
+
+	T& Back()
+	{
+		return _con.Back();
+	}
+	size_t size()
+	{
+		return _con.Size();
+	}
+	bool Empty()
+	{
+		return _con.Empty();
+	}
+private:
+	Container _con;
+};
+
+
+
+void TestStack()
+{
+	Stack<string ,Seqlist<string>> s;
+	s.Push("11");
+	s.Push("22");
+	s.Push("33");
+
+	while (!s.Empty())
+	{
+		cout << s.Back()<<" ";
+		s.Pop();
+	}
+	cout << endl;
+}
+
+
+int main()
+{
+	TestStack();
+
+	return 0;
+}
+
+
+
