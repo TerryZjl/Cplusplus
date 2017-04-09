@@ -1,0 +1,175 @@
+//Ë«Á´±í
+#include<iostream>
+using namespace std;
+
+template<typename T>
+struct ListNode
+{
+	ListNode<T>* _next;
+	ListNode<T>* _prve;
+	T _date;
+	ListNode(const T& x)
+		:_date(x)
+		, _next(NULL)
+		, _prve(NULL)
+	{}
+	
+};
+
+template<typename T>
+class List
+{
+typedef ListNode<T> Node;
+public:
+	List()
+		:_head(NULL)
+		, _tail(NULL)
+	{}
+
+	List(const List<int>& l)
+		:_head(NULL)
+		, _tail(NULL)
+	{
+		Node* tmp = l._head;
+		while (tmp)
+		{
+			PushBack(tmp->_date);
+			tmp = tmp->_next;
+		}
+	}
+
+	List<T>& operator=(List<T> s)
+	{
+		swap(_head, s._head);
+		swap(_tail, s._tail);
+		return *this;
+	}
+
+	~List()
+	{
+		clear();
+	}
+
+	void clear()
+	{
+		Node* del = _head;
+		while (del)
+		{
+			Node* next = del->_next;
+			delete del;
+			del = next;
+		}
+		_head = _tail = NULL;
+	}
+
+	void PushBack(const T& x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* _tmp = new Node(x);
+			_tail->_next = _tmp;
+			_tmp->_prve= _tail;
+			_tail = _tmp;
+		}
+	}
+
+	void PopBack()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->_next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _tail;
+			_tail = del->_prve;
+			_tail->_next = NULL;
+			delete del;
+		}
+	}
+
+	void PushFront(const T& x)
+	{
+		if (_head == NULL)
+		{
+			_head = _tail = new Node(x);
+		}
+		else
+		{
+			Node* tmp = new Node(x);
+			tmp->_next = _head;
+			tmp->_prve = NULL;
+			_head = tmp;
+		}
+	}
+
+	void PopFront()
+	{
+		if (_head == NULL)
+		{
+			return;
+		}
+		else if (_head->_next == NULL)
+		{
+			delete _head;
+			_head = _tail = NULL;
+		}
+		else
+		{
+			Node* del = _head;
+			_head = del->_next;
+			_head->_prve = NULL;
+			delete del;
+		}
+	}
+	T& Back()
+	{
+		assert(_tail);
+		return _tail->_date;
+	}
+	T& Front()
+	{
+		assert(_head);
+		return _head->_date;
+	}
+	size_t Size()
+	{
+		Node* cur = _head;
+		
+		size_t cout = 0;
+		while (cur)
+		{
+			cout++;
+			cur = cur->_next;
+		}
+		return _cout;
+	}
+	bool Empty()
+	{
+		return _head == NULL;
+	}
+
+	void print()
+	{
+		Node* tmp = _head;
+		while (tmp)
+		{
+			cout << tmp->_date<<" ";
+			tmp = tmp->_next;
+		}
+		cout << endl;
+	}
+private:
+	Node* _head;
+	Node* _tail;
+};
+
