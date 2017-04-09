@@ -1,8 +1,11 @@
 #include<iostream>
+#include<string>
 #include<assert.h>
 using namespace std;
 
 
+
+//Ë³Ðò±í
 template<typename T>
 class Seqlist
 {
@@ -14,16 +17,23 @@ public:
 	{}
 	void _CheckCapacity()
 	{
-		if (_capacity == _size)
+		if (_capacity <= _size)
 		{
 			_capacity = _capacity * 2 + 3;
-			T* tmp = new T[_capacity];
+			//_a = (T*)realloc(_a, sizeof(T)*_capacity);
+	        T* tmp = new T[_capacity];
+			//memcpy(tmp, _a, sizeof(T)*_size);
 
 			if (_a)
 			{
-				memcpy(tmp, _a, sizeof(T)*_size);
+			    
+				for (size_t i = 0; i < _size; i++)
+				{
+					tmp[i] = _a[i];
+				}
 				delete[] _a;
 			}
+			
 			_a = tmp;
 		}
 	}
@@ -47,6 +57,18 @@ public:
 		return *this;
 	}
 
+	void PopFront()
+	{
+		assert(_size);
+		int i = 0;
+		while (i < _size)
+		{
+			_a[i] = _a[i + 1];
+			i++;
+		}
+		_size--;
+	}
+
 	void PushBack(const T& x)
 	{
 		_CheckCapacity();
@@ -56,8 +78,11 @@ public:
 
 	void PopBack()
 	{
-		assert(_a);
-		_size--;
+		if (_size > 0)
+		{
+			--_size;
+		}
+			
 	}
 
 	~Seqlist()
@@ -77,7 +102,7 @@ public:
 
 	T& Back()
 	{
-		return _a[_size];
+		return _a[_size-1];
 	}
 	size_t size()
 	{
@@ -86,7 +111,7 @@ public:
 
 	bool Empty()
 	{
-		return _a == NULL;
+		return _size == 0;
 	}
 
 	void print();
@@ -104,4 +129,19 @@ void Seqlist<T>::print()
 		cout << _a[i] << " ";
 	}
 	cout << endl;
+}
+int main()
+{
+	TestStack();
+	//Seqlist<string> s;
+	//s.PushBack("1");
+	//s.PushBack("2");
+	//s.PushBack("3");
+	//s.print();
+	//Seqlist<> s1(s);
+	//Seqlist<int> s2;
+	////s2 = s;
+	//s2.print();
+
+	return 0;
 }
