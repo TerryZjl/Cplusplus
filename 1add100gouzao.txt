@@ -1,0 +1,33 @@
+#include<iostream>
+using namespace std;
+class test
+{
+public:
+	test()
+	{
+		N++;
+	    SUM += N;
+	}
+	//int GetSum()
+	//{
+	//	return SUM;
+	//}
+public:
+	static int N;
+	static int SUM;
+
+};
+int test::N = 0;
+int test::SUM = 0;
+
+int main()
+{
+	int n = 100;
+	test *a = new test[n];
+	delete[] a;
+	a = NULL;
+	//value = a->GetSum();
+	cout << test::SUM << endl;
+	system("pause");
+	return 0;
+}
