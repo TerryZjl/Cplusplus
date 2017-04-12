@@ -1,0 +1,121 @@
+#include<iostream>
+#include<assert.h>
+#pragma warning(disable:4996)
+using namespace std;
+
+template<typename T>
+class AutoPtr
+{
+public:
+	AutoPtr(T* s = NULL)
+		:_ptr(s)
+	{
+	}
+
+	AutoPtr(AutoPtr<T>& s)
+	{
+		_ptr = new T(*(s._ptr));
+		s._ptr = NULL;
+	}
+
+	AutoPtr& operator=(AutoPtr<T>& s)
+	{
+		if (s._ptr != _ptr)
+		{
+			delete _ptr;
+			_ptr = s._ptr;
+			s._ptr = NULL;
+		}
+		return *this;
+	}
+	//因为在返回*_ptr时会创建一个临时对象，若不要引用的话，临时对象具有常属性就不能作左值
+	T& operator*()
+	{
+		return *_ptr;
+	}
+
+	//p2->->a1 == T->a
+	T* operator->()
+	{
+		return _ptr;
+	}
+	~AutoPtr()
+	{
+		cout << "释放内存" << endl;
+		delete _ptr;
+	}
+private:
+	T* _ptr;
+};
+
+struct AA
+{
+	int a = 3;
+};
+
+void F1(bool isend)
+{
+	if (isend)
+	{
+		throw string("抛出异常");
+	}
+	else
+	{
+		cout << "正常运行" << endl;
+	}
+}
+
+void TestAutoPer()
+{
+	/*通过捕获异常处理内存泄漏*/
+	//int* p = new int(2);
+
+	//try
+	//{
+	//	F1(true);
+	//}
+	//catch (...)
+	//{
+	//	cout << "delete" << p << endl;
+	//	delete p;
+	//	throw;
+	//}
+
+
+	//delete p;
+
+	//int* p = new int(2);
+	AutoPtr<int> p2(new int(2));
+
+	//cout << p2.operator*() << endl;
+	cout << *p2 << endl;
+	*p2 = 5;
+
+	//AutoPtr<AA> p3(new AA);
+	//cout << (*p3).a << endl;
+	//cout << p3->a << endl;
+
+	//AutoPtr<int> p3(p2);
+	//*p3 = 20;
+	//*p2 = 10;  //管理权限转移后就无法访问了，现在他已经指向空指针了
+
+	AutoPtr<int> p4(new int(6));
+	p4 = p2;
+
+
+
+}
+
+
+int main()
+{
+	try
+	{
+		TestAutoPer();
+	}
+	catch (...)
+	{
+	}
+	system("pause");
+	return 0;
+}
