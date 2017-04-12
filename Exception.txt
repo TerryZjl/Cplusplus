@@ -1,0 +1,53 @@
+#include<iostream>
+#include<assert.h>
+#pragma warning(disable:4996)
+using namespace std;
+
+void F1()
+{
+	int* i = new int[100000];
+	char* p = NULL;
+	try
+	{
+		p = new char[0x7fffffff];
+	}
+	catch (...)
+	{
+		cout << "delete" << i << endl;
+		delete[] i;
+		throw;
+	}
+
+	delete[] i;
+	delete[] p;
+}
+
+void F2()
+{
+	FILE* fout = fopen("test.txt", "w");
+	try
+	{
+		F1();
+	}
+	catch (...)
+	{
+		cout << "fclose" << fout<<endl;
+		fclose(fout);
+		throw;
+	}
+	fclose(fout);
+}
+
+int main()
+{
+	try
+	{
+		F2();
+	}
+	catch (const bad_alloc& e)
+	{
+		cout << "²¶»ñÒì³£" << e.what() << endl;
+	}
+	system("pause");
+	return 0;
+}
