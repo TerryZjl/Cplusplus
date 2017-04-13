@@ -1,0 +1,112 @@
+
+
+#include<iostream>
+#include<assert.h>
+#pragma warning(disable:4996)
+using namespace std;
+
+//ScopedPtr 简单粗暴    防拷贝  只声明不定义
+template<typename T>
+class ScopedPtr
+{
+public:
+	ScopedPtr(T* s = NULL)
+	    :_ptr(s)
+	{
+	}
+
+	T& operator*()
+	{
+		return *_ptr;
+	}
+
+	T* operator->()
+	{
+		return _ptr;
+	}
+
+	~ScopedPtr()
+	{
+		cout << "释放内存" << _ptr << endl;
+		delete _ptr;
+	}
+protected:
+	ScopedPtr(ScopedPtr<T>& s);
+	ScopedPtr<T>& operator=(ScopedPtr<T>& s);
+protected:
+	T* _ptr;
+};
+
+struct AA
+{
+	int a;
+	AA(int s)
+		:a(s)
+	{}
+};
+
+void f1(bool isend)
+{
+	if (isend)
+	{
+		throw string("抛出异常");
+	}
+	else
+	{
+		cout << "正常运行" << endl;
+	}
+}
+
+void TestAutoPtr()
+{
+	/*通过捕获异常处理内存泄漏*/
+	//int* p = new int(2);
+
+	//try
+	//{
+	//	f1(true);
+	//}
+	//catch (...)
+	//{
+	//	cout << "delete" << p << endl;
+	//	delete p;
+	//	throw;
+	//}
+
+
+	//delete p;
+
+	//int* p = new int(2);
+	ScopedPtr<int> p2 = new int(2);
+
+	//cout << p2.operator*() << endl;
+	cout << *p2 << endl;
+	*p2 = 5;
+
+	ScopedPtr<AA> p3 = new AA(3);
+	cout << (*p3).a << endl;
+	cout << p3->a << endl;
+
+	ScopedPtr<int> p4(new int(6));
+	//p4 = p2;  防赋值
+
+	//ScopedPtr<int> p5(p4);  防拷贝
+
+
+
+}
+
+
+int main()
+{
+	try
+	{
+		TestAutoPtr();
+	}
+	catch (...)
+	{
+		cout << "捕获异常" << endl;
+	}
+	system("pause");
+	return 0;
+}
