@@ -1,0 +1,25 @@
+#include<stdio.h>
+#include<assert.h>
+
+int bin_search(int* arr, int left, int right, int num)
+{
+	assert(arr);
+	int mid = 0;
+	while (left <= right)
+	{
+		mid = (left + right) / 2;
+		if (num == *(arr + mid))
+		{
+			return mid;
+		}
+		else if (num < *(arr + mid))
+		{
+			return(bin_search(arr, left, mid, num));
+		}
+		else
+		{
+			return(bin_search(arr, mid, right, num));
+		}
+	}
+	return NULL;
+}
