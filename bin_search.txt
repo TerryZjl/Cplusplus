@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<assert.h>
+//非递归  
+int bin_search(int *arr, int sz, int num)
+{
+	assert(arr);
+	int left = 0;
+	int right = sz - 1;   
+	int mid = 0;
+	while (left <= right)
+	{
+		mid = (left + right) / 2;   //中间位置每次都在变  
+		if (num == *(arr + mid))
+		{
+			return mid;
+		}
+		else if (num < *(arr + mid))
+		{
+			right = mid - 1;
+		}
+		else
+		{
+			left = mid + 1;
+		}
+
+	}
+	if (left > right)
+		return NULL;
+	else
+		return mid;
+}
