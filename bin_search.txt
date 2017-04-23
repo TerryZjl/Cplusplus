@@ -1,6 +1,8 @@
 #include<stdio.h>
+#include<windows.h>
 #include<assert.h>
-//非递归  
+
+////非递归  
 int bin_search(int *arr, int sz, int num)
 {
 	assert(arr);
@@ -28,4 +30,23 @@ int bin_search(int *arr, int sz, int num)
 		return NULL;
 	else
 		return mid;
+}
+
+int main()
+{
+	int arr[] = { 1, 2, 3, 5, 7, 9, 11 };
+	int n = sizeof(arr)/sizeof(arr[0]);
+	int value = 0;
+	value = bin_search(arr, n, 9);
+
+	if (value == NULL)
+	{
+		printf("no\n");
+	}
+	else
+	{
+		printf("在小标为%d\n",value);
+	}
+	system("pause");
+	return 0;
 }
