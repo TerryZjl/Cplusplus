@@ -1,0 +1,36 @@
+#include<iostream>
+#include<windows.h>
+#include<assert.h>
+
+void Fibonacci(int n)
+{
+	int first = 0;
+	int second = 1;
+	int third = 0;
+	if (n == 1|| n == 2)
+	{
+		printf("1 ");
+	}
+	else
+	{
+		printf("1 ");
+		for (size_t i = 3; i <= n; i++)
+		{
+			third = first + second;
+			printf("%d ", third);
+			first = second;
+			second = third;
+		}
+	}
+
+}
+
+int main()
+{
+	int i = Fibo(10);
+
+	printf("%d ", i);
+	system("pause");
+	return 0;
+}
+
