@@ -1,25 +1,47 @@
 #include<stdio.h>
 #include<assert.h>
 
-int bin_search(int* arr, int left, int right, int num)
+////递归  
+int bin_search(int *arr, int left, int right,int num)
 {
 	assert(arr);
+
 	int mid = 0;
-	while (left <= right)
+
+	while (left<=right)
 	{
 		mid = (left + right) / 2;
-		if (num == *(arr + mid))
+		if (arr[mid] == num)
 		{
 			return mid;
 		}
-		else if (num < *(arr + mid))
+		else if(arr[mid]>mid)
 		{
-			return(bin_search(arr, left, mid, num));
+			return bin_search(arr, mid+1 , right,num); 
 		}
 		else
 		{
-			return(bin_search(arr, mid, right, num));
+			return bin_search(arr, left, mid-1,num);
 		}
 	}
 	return NULL;
+}
+
+int main()
+{
+	int arr[] = { 1, 2, 3, 5, 7, 9, 11 };
+	int n = sizeof(arr) / sizeof(arr[0]);
+	int value = 0;
+	value = bin_search(arr, 0, n - 1, 10);
+
+	if (value == NULL)
+	{
+		printf("no\n");
+	}
+	else
+	{
+		printf("在下标为%d\n",value);
+	}
+	system("pause");
+	return 0;
 }
