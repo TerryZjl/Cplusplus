@@ -1,0 +1,166 @@
+#include<iostream>
+using namespace std;
+
+template<typename T>
+struct ListNode
+{
+	T _data;
+	ListNode<T>* _next;
+	ListNode<T>* _prev;
+	ListNode<T>(const T& x)
+		: _next(NULL)
+		, _prev(NULL)
+		, _data(x)
+	{};
+};
+
+
+//µü´úÆ÷
+template<typename T, typename Ref, typename Ptr>
+struct _Listiterator
+{
+	typedef ListNode<T> Node;
+	typedef _Listiterator<T, Ref, Ptr> Self;
+
+	_Listiterator(Node* node)
+		:_node(node)
+	{}
+
+	Ref operator*()
+	{
+		return _node->_data;
+	}
+
+
+	Self& operator--()
+	{
+		_node = _node->_prev;
+		return *this;
+	}
+
+	Self operator--(int)
+	{
+		Node* tmp = _node;
+		_node = _node->_prev;
+		return tmp;
+	}
+
+	Self& operator++()
+	{
+		_node = _node->_next;
+		return *this;
+	}
+	
+	Self operator++(int)
+	{
+		Node* tmp = _node;
+		_node = _node->_next;
+		return tmp;
+	}
+	bool operator!=(Self& s)const
+	{
+		return _node != s._node;
+	}
+
+	Node* _node;
+};
+
+template<typename T>
+class List
+{
+	typedef ListNode<T> Node;
+
+public:
+
+	typedef _Listiterator<T, T&, T*>  Iterator;
+	typedef _Listiterator<T,const T&,const T*>  ConstIterator;
+
+	Node* GetNode(const T& x)
+	{
+		return new Node(x);
+	}
+
+	List()
+		:_head(GetNode(T()))
+	{
+		_head->_next = _head;
+		_head->_prev = _head;
+	}
+
+	void Inset(Iterator pos, const T& x)
+	{
+	}
+
+	Iterator Erase(Iterator pos)
+	{
+		del = pos._node;
+		pos->_node = pos._node->_next;
+		delete del;
+		return pos;
+	}
+	
+	Iterator Begin()
+	{
+		return Iterator(_head->_next);
+	}
+
+	Iterator End()
+	{
+		return Iterator(_head);
+	}
+
+	//ConstIterator Begin() const
+	//
+	//	return ConstIterator(_head->_next);
+	//}
+
+	//ConstIterator End() const
+	//{
+	//	return ConstIterator(_head);
+	//}
+
+	void PushBack(const T& x)
+	{
+		Node* tail = _head->_prev;
+		Node* tmp = GetNode(x);
+
+		tail->_next = tmp;
+		tmp->_prev = tail;
+		tmp->_next = _head;
+		_head->_prev = tmp;
+	}
+
+private:
+	Node* _head;
+};
+
+void PrintList( List<int>& L)
+{
+	List<int>::Iterator it = L.Begin();
+
+	while (it != L.End())
+	{
+		if (*it % 2 == 0)
+		{
+			L.Erase(it);
+		}
+		else
+		{
+			printf("%d ", *it);
+			it++;
+		}
+	}
+	cout << endl;
+}
+
+void Testlist()
+{
+	List<int> l1;
+
+	l1.PushBack(1);
+	l1.PushBack(2);
+	l1.PushBack(3);
+	l1.PushBack(4);
+
+	PrintList(l1);
+}
