@@ -1,0 +1,77 @@
+#include<iostream>
+using namespace std;
+
+template <class T>
+struct BinTreeNode
+{
+	BinTreeNode<T>* _left;
+	BinTreeNode<T>* _right;
+	T _data;
+
+	struct BinTreeNode(const T& x)
+		:_left(NULL)
+		, _right(NULL)
+		, _data(x)
+	{
+	};
+};
+
+template <class T>
+class  BinTree
+{
+	typedef BinTreeNode<T> Node;
+public:
+	BinTree()
+		:_root(NULL)
+	{}
+	BinTree(T* arr, int n, const T& value)
+	{
+		int i = 0;
+		_root = CreatTree(arr, n, value, i);//因为这里成员函数含有隐含的This指针，所以不能实现递归
+	}
+	~BinTree()
+	{
+		Destroy(_root);
+	}
+
+private:
+	Node* CreatTree(T* arr, int n, const T& value, int& i)
+	{
+		Node* root = NULL;
+		if ((i<n) && (arr[i] != value))
+		{
+			root = new Node(arr[i]);
+			root->_left = CreatTree(arr, n, value, ++i);
+			root->_right = CreatTree(arr, n, value, ++i);
+		}
+
+		return root;
+	}
+	void Destroy(Node* root)
+	{
+		if (root == NULL)
+		{
+			return;
+		}
+		Destroy(root->_left);
+		Destroy(root->_right);
+
+		delete root;
+	}
+private:
+	Node* _root;
+};
+
+
+
+
+void TestTree()
+{
+	int tree[] = { 1, 2, 3, '#', '#', 4, '#', '#', 5, 6 };
+	BinTree<int> Tree(tree, sizeof(tree) / sizeof(tree[0]), '#');
+}
+int main()
+{
+	TestTree();
+	return 0;
+}
