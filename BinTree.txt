@@ -1,3 +1,27 @@
+#include"BinTree.h"
+
+
+void TestTree()
+{
+	int tree[] = { 1, 2, 3, '#', 7,'#','#', 4, '#', '#', 5, 6 };
+	BinTree<int> Tree(tree, sizeof(tree) / sizeof(tree[0]), '#');
+	Tree.PrevOrder();
+	Tree.InOrder();
+	Tree.PostOrder();
+	cout << "结点数："<<Tree.Size() << endl; 
+	cout << "叶子结点数：" << Tree.LeafSize() << endl;
+	cout << "第K层结点数：" << Tree.GetKLevel(3) << endl;
+	cout << "深度：" << Tree.Depth() << endl;
+	cout << "寻找结点：" << Tree.Find(7) << endl;
+}
+int main()
+{
+	TestTree();
+	system("pause");
+	return 0;
+}
+
+
 #include<iostream>
 using namespace std;
 
@@ -29,12 +53,161 @@ public:
 		int i = 0;
 		_root = CreatTree(arr, n, value, i);//因为这里成员函数含有隐含的This指针，所以不能实现递归
 	}
+
+	void PrevOrder()
+	{
+		cout << "先序：";
+		_PrevOrder(_root);
+		cout << endl;
+	}
+
+	void InOrder()
+	{
+		cout << "中序：";
+		_InOrder(_root);
+		cout << endl;
+	}
+
+	void PostOrder()
+	{
+		cout << "后序：";
+		_PostOrder(_root);
+		cout << endl;
+	}
+	size_t Size()
+	{
+		return _Size(_root);
+	}
+
+	size_t LeafSize()
+	{
+		return _LeafSize(_root);
+	}
+	//求第K层的节点数
+	size_t GetKLevel(size_t k)
+	{
+		return _GetKLevel(_root, k);
+	}
+
+	size_t Depth()
+	{
+		return _Depth(_root);
+	}
+	Node* Find(const T& x)
+	{
+		return _Find(_root,x);
+	}
 	~BinTree()
 	{
 		Destroy(_root);
 	}
 
 private:
+	Node* _Find(Node* root,const T& x)
+	{
+		if (root == NULL){ return NULL; }
+
+		if (root->_data == x){ return root; }
+	   
+		Node* ret = _Find(root->_left, x);
+		if (ret != NULL)            //这里如果左子树找到了，就不用再去右子树寻找了，直接返回
+		{
+			return ret;
+		}
+		return _Find(root->_right, x);  //若果左子树没有找到，再去右子树寻找，无论找到没找都需要一个返回值，所以直接返回
+	}
+	size_t _Depth(Node* root) //因为在递归返回时，需要累加每一层递归，所以加1，依次求出深度
+	{
+		if (root == NULL)
+		{
+			return 0;
+		}
+
+		if ((root->_left == NULL) && (root->_right == NULL))
+		{
+			return 1;
+		}
+		size_t left = _Depth(root->_left);
+		size_t right = _Depth(root->_right);
+		return left >= right ? left + 1 : right + 1; 
+	}
+
+	//第K层的节点数
+	size_t _GetKLevel(Node* root, size_t k)  //这里不用担心如果K超过了最深深度，因为如果超了，就会返回0.
+	{
+		if (root == NULL)
+		{
+			return 0;
+		}
+		if (k == 1)
+		{
+			return 1;
+		}
+
+		return _GetKLevel(root->_left, k - 1) + _GetKLevel(root->_right, k - 1);
+	}
+	//叶子结点
+	size_t _LeafSize(Node* root)
+	{
+		if (root == NULL)
+		{
+			return 0;
+		}
+
+		if (root->_left == NULL&&root->_right == NULL)
+		{
+			return 1;
+		}
+
+		return _LeafSize(root->_left) + _LeafSize(root->_right);
+	}
+	//结点数
+	size_t _Size(Node* root)
+	{
+		size_t left = 0;
+		size_t right = 0;
+
+		if (root == NULL)
+		{
+			return 0;
+		}
+
+		left = _Size(root->_left);
+		right = _Size(root->_right);
+		return left + right + 1;
+	}
+	void _PostOrder(Node* root)
+	{
+		if (root == NULL)
+		{
+			return;
+		}
+		_PostOrder(root->_left);
+		_PostOrder(root->_right);
+		cout << root->_data << " ";
+	}
+	void _InOrder(Node* root)
+	{
+		if (root == NULL)
+		{
+			return;
+		}
+		_InOrder(root->_left);
+		cout << root->_data << " ";
+		_InOrder(root->_right);
+	}
+
+	void _PrevOrder(Node* root)
+	{
+		if (root == NULL)
+		{
+			return;
+		}
+		cout << root->_data << " ";
+		_PrevOrder(root->_left);
+		_PrevOrder(root->_right);
+	}
+
 	Node* CreatTree(T* arr, int n, const T& value, int& i)
 	{
 		Node* root = NULL;
@@ -62,16 +235,3 @@ private:
 	Node* _root;
 };
 
-
-
-
-void TestTree()
-{
-	int tree[] = { 1, 2, 3, '#', '#', 4, '#', '#', 5, 6 };
-	BinTree<int> Tree(tree, sizeof(tree) / sizeof(tree[0]), '#');
-}
-int main()
-{
-	TestTree();
-	return 0;
-}
