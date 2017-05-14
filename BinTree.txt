@@ -14,15 +14,47 @@ void TestTree()
 	cout << "深度：" << Tree.Depth() << endl;
 	cout << "寻找结点：" << Tree.Find(7) << endl;
 }
+
+void TestTreeR()
+{
+	int tree[] = { 1, 2, 3, '#', 7, '#', '#', 4, '#', '#', 5, 6 };
+	BinTree<int> Tree(tree, sizeof(tree) / sizeof(tree[0]), '#');
+	Tree.PrevOrder();
+	Tree.InOrder();
+	Tree.PostOrder();
+	cout << "结点数：" << Tree.Size() << endl;
+	cout << "叶子结点数：" << Tree.LeafSize() << endl;
+	cout << "第K层结点数：" << Tree.GetKLevel(3) << endl;
+	cout << "深度：" << Tree.Depth() << endl;
+	cout << "寻找结点：" << Tree.Find(7) << endl;
+	Tree.PrevOrderR();
+	Tree.InOrderR();
+	Tree.PostOrderR();
+	BinTree<int> T2(Tree);
+	T2.InOrder();
+
+}
 int main()
 {
-	TestTree();
+	TestTreeR();
 	system("pause");
 	return 0;
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
 #include<iostream>
+#include<stack>
 using namespace std;
 
 template <class T>
@@ -54,6 +86,23 @@ public:
 		_root = CreatTree(arr, n, value, i);//因为这里成员函数含有隐含的This指针，所以不能实现递归
 	}
 
+	BinTree(const BinTree<T>& tree)
+		:_root(NULL)
+	{
+		_root = _copy(tree._root);
+	}
+
+	BinTree<T>& operator==(BinTree<T>& tree)
+	{
+		if (this != &tree)
+		{
+			Destroy(_root);
+			_root = _copy(tree._root);
+		}
+			
+		return *this;
+	}
+
 	void PrevOrder()
 	{
 		cout << "先序：";
@@ -61,6 +110,74 @@ public:
 		cout << endl;
 	}
 
+	void PrevOrderR()
+	{
+		Node* cur = _root;
+		stack<Node*> s;
+
+		while (!s.empty() || cur != NULL)  //若这里的cur为空，则说明左右子树都为空，只有栈和右子树同时为空时，二叉树才访问完
+		{
+			while (cur != NULL)
+			{
+				cout << cur->_data <<" ";
+				s.push(cur);
+				cur = cur->_left;
+			}
+
+			//若左子树和为空时程序则走到这里，开始取栈顶元素来访问上一层父节点的右子树
+			Node* top = s.top();
+			cur = top->_right;
+			s.pop();
+		}
+		cout << endl;
+	}
+	void InOrderR()
+	{
+		Node* cur = _root;
+		stack<Node*> s;
+
+		while (!s.empty() || cur != NULL)  //若这里的cur为空，则说明左右子树都为空
+		{
+			while (cur != NULL)
+			{
+				s.push(cur);
+				cur = cur->_left;
+			}
+
+			//若左子树为空时程序则走到这里，开始取栈顶元素来打印父节点，并访问父节点的右子树
+			Node* top = s.top();
+			cout << top->_data << " ";
+			cur = top->_right;
+			s.pop();
+		}
+		cout << endl;
+	}
+	void PostOrderR()
+	{
+		Node* cur = _root;
+		stack<Node*> s;
+		Node* Prev = NULL;   //用Prev记录上一次访问的节点，这样就可以判断右子树（不为空时）是第一次访问，还是第二次访问
+		while (!s.empty() || cur != NULL)             //第一次访问会把右子树当成子问题处理，当右子问题输出后，Prev就会置成右子节点         
+		{                                            //当在一次回到访问右子树的父节点时，发现上一次的Prev是右子节点，作说明已经访问过有节点，这可以输出根结点了    
+			while (cur != NULL)    //从根结点开始把左子树全部压入栈
+			{
+				s.push(cur);
+				cur = cur->_left;
+			}
+			Node* top = s.top();  //左子树为空时，取出栈顶元素
+			if (top->_right == NULL||top->_right == Prev)//取出栈顶元素，看他的右子树是否为空或者是否右子树已经访问过，若是则打印当前节点，并把当前节点出栈
+			{
+				cout << top->_data <<" ";
+				Prev = top;            
+				s.pop();                   
+			}
+			else            //若右子树没访问过，且不为空，则把右子树当成子问题，继续上面的压栈操作
+			{
+				cur = top->_right;
+			}
+		}
+		cout << endl;
+	}
 	void InOrder()
 	{
 		cout << "中序：";
@@ -103,6 +220,17 @@ public:
 	}
 
 private:
+	Node* _copy(Node* root)
+	{
+		if (root == NULL)
+		{
+			return NULL;
+		}
+		Node* NewRoot = new Node(root->_data);
+		NewRoot->_left = _copy(root->_left);
+		NewRoot->_right = _copy(root->_right);
+		return NewRoot;
+	}
 	Node* _Find(Node* root,const T& x)
 	{
 		if (root == NULL){ return NULL; }
@@ -234,4 +362,7 @@ private:
 private:
 	Node* _root;
 };
+
+
+
 
