@@ -1,0 +1,82 @@
+#ifndef _HMT_H_
+#define _HMT_H_
+
+#include<iostream>
+#include"Heap.h"
+using namespace std;
+
+template<class W>
+struct HuffmanTreeNode
+{
+	HuffmanTreeNode<W>* _left;
+	HuffmanTreeNode<W>* _right;
+	HuffmanTreeNode<W>* _parent;
+	W _w;
+
+	struct HuffmanTreeNode(const W& w)
+		:_w(w)
+		, _left(NULL)
+		, _right(NULL)
+		, _parent(NULL)
+	{
+	};
+};
+
+template<class W>
+class HuffmanTree
+{
+	typedef HuffmanTreeNode<W> Node;
+public:
+	HuffmanTree()
+		:_root(NULL)
+	{}
+
+	HuffmanTree(W* a, size_t n,const W& ivaliad)
+	{
+		struct Com
+		{
+			bool operator()(const Node* left, const Node* right) const
+			{
+				return left->_w < right->_w;
+			}
+		};
+		Heap<Node*, Com>  SmallHeap;
+		for (size_t i = 0; i < n;i++)
+		{
+			if (a[i] != ivaliad)
+			{
+				SmallHeap.Push(new Node(a[i]));
+			}
+		}
+
+		while (SmallHeap.Size()>1)
+		{
+			Node* left = SmallHeap.Top();
+			SmallHeap.Pop();
+			Node* right = SmallHeap.Top();
+			SmallHeap.Pop();
+
+			Node* parent = new Node(left->_w + right->_w);
+			parent->_left = left;
+			parent->_right = right;
+			left->_parent = parent;
+			right->_parent = parent;
+			SmallHeap.Push(parent);
+		}
+		_root = SmallHeap.Top();
+	}
+	Node* GetRoot()
+	{
+		return _root;
+	}
+private:
+	Node* _root;
+};
+
+void TestHuffman()
+{
+	int a[] = { 2, 0, 1, 5, 3, 4, 6, 7, 8, 9 };
+	HuffmanTree<int> t1(a, sizeof(a) / sizeof(a[0]),-1);
+}
+
+#endif
