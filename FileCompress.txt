@@ -1,0 +1,110 @@
+#pragma warning(disable:4996)
+#include"HuffmanTree.h"
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+
+struct CharInfo
+{
+	char _ch;
+	size_t _count;
+	string _code;
+
+	bool operator!=(const CharInfo& ci) const
+	{
+		return _count != ci._count;
+	}
+
+	CharInfo operator+(const CharInfo& ci) const
+	{
+		CharInfo ret;
+		ret._count = _count + ci._count;
+		return ret;
+	}
+	bool operator<(const CharInfo& ci) const
+	{
+		return _count < ci._count;
+	}
+};
+
+
+class FileCompress
+{
+	typedef HuffmanTreeNode<CharInfo> Node;
+public:
+	FileCompress()
+	{
+		//将每个素组元素赋成相应的字符，且把出现的次数置成0
+		for (size_t i = 0; i < 256; ++i)
+		{
+			_info[i]._ch = i;
+			_info[i]._count = 0;
+		}
+	}
+
+	void Compress(char* Filename)
+	{
+		//统计字符出现的次数
+		FILE* f = fopen(Filename, "r");
+		char ch = fgetc(f);
+		while (ch != EOF)
+		{
+			_info[ch]._count++;
+			ch = fgetc(f);
+		}
+		fclose(f);
+
+		//构建Huffman树
+		CharInfo ivaliad;
+		ivaliad._count = 0;
+		HuffmanTree<CharInfo> tree(_info, 256, ivaliad);
+
+		//生成Huffman编码
+		GetHuffmanCode(tree.GetRoot());
+
+		//压缩
+
+);
+	}
+
+private:
+	Node* GetHuffmanCode(Node* root)
+	{
+		if (root == NULL)
+			return NULL;
+
+		if (root->_left == NULL&&root->_right == NULL)
+		{
+			string code;
+			Node* parent = root->_parent;
+			Node* cur = root;
+			while (parent)
+			{
+				if (parent->_left == cur)
+				{
+					code.push_back('0');
+				}
+
+				if (parent->_right == cur)
+				{
+					code.push_back('1');
+				}
+				cur = parent;
+				parent = cur->_parent;
+			}
+			reverse(code.begin(),code.end());
+			_info[root->_w._ch]._code = code;
+		}
+		GetHuffmanCode(root->_left);
+		GetHuffmanCode(root->_right);
+	}
+private:
+	CharInfo _info[256];
+};
+
+void TestCompress()
+{
+	FileCompress fc;
+	fc.Compress("test.txt");
+}
