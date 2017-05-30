@@ -1,0 +1,320 @@
+#ifndef _BST_H_
+#define _BST_H_
+
+#include<iostream>
+using namespace std;
+
+template<class K>
+struct  BinarySearchTreeNode
+{
+	BinarySearchTreeNode* _left;
+	BinarySearchTreeNode* _right;
+	K _key;
+	BinarySearchTreeNode(const K& key)
+		:_left(NULL)
+		, _right(NULL)
+		, _key(key)
+	{}
+};
+
+template<class K>
+class BinarySearchTree
+{
+	typedef BinarySearchTreeNode<K> Node;
+public:
+	BinarySearchTree()
+		:_root(NULL)
+	{}
+
+	//插入节点
+	bool Insert(const K& key)
+	{
+		if (_root == NULL)
+		{
+			_root = new Node(key);
+			return true;
+		}
+
+		Node* parent = NULL;
+		Node* cur = _root;
+		while (cur)
+		{
+			if (key > cur->_key)
+			{
+				parent = cur;
+				cur = cur->_right;
+			}
+			else if (key<cur->_key)
+			{
+				parent = cur;
+				cur = cur->_left;
+			}
+			else//说明已有此节点
+			{
+				return false;
+			}
+		}
+		if (key > parent->_key)
+		{
+			cur = new Node(key);
+			parent->_right = cur;
+		}
+		else
+		{
+			cur = new Node(key);
+			parent->_left = cur;
+		}
+		return true;
+	}
+	//删除节点
+	bool Remove(const K& key)
+	{
+		if (_root == NULL)
+		{
+			return false;
+		}
+		Node* parent = NULL;
+		Node* cur = _root;
+		while (cur)
+		{
+			if (key > cur->_key)
+			{
+				parent = cur;
+				cur = cur->_right;
+			}
+			else if (key< cur->_key)
+			{
+				parent = cur;
+				cur = cur->_left;
+			}
+			else
+			{
+				//找到节点，删除节点
+				Delete(cur,parent);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	Node* Find(const K& key)
+	{
+		Node* cur = _root;
+		while (cur)
+		{
+			if (key > cur->_key)
+			{
+				cur = cur->_right;
+			}
+			else if (key<cur->_key)
+			{
+				cur = cur->_left;
+			}
+			else
+			{
+				return cur;
+			}
+		}
+		return NULL;
+	}
+	bool RemoveR(const K& key)
+	{
+		return _RemoveR(_root, key);
+	}
+	void InOder()
+	{
+		_InOder(_root);
+		cout << endl;
+	}
+private:
+	bool _RemoveR(Node*& root,const K& key)
+	{
+		if (root == NULL)
+		{
+			return false;
+		}
+
+		Node* cur = root;
+		if (key > cur->_key)
+		{
+			return _RemoveR(cur->_right, key);
+		}
+		else if (key < cur->_key)
+		{
+			return _RemoveR(cur->_left, key);
+		}
+		else
+		{
+			//找到节点，并删除
+			Node* del = cur;
+			if (cur->_left == NULL) //左为空或者左右都为空
+			{
+				root = cur->_right;
+				delete del;
+			}
+			else if (cur->_right == NULL) //右为空
+			{
+				root = cur->_left;
+				delete del;
+			}
+			else//左右都不为空，用替换法
+			{
+				Node* parent = root;
+				Node* NodeL = cur->_right;
+				while (NodeL->_left)
+				{
+					parent = NodeL;
+					NodeL = NodeL->_left;
+				}
+
+
+				swap(cur->_key,NodeL->_key);  ////把要删除的节点用当前节点右子树的最左节点替换
+				                              //这里必须用交换，不能cur->_key,NodeL->_key；因为 还要把NodeL当成左为空的子问题进行删除，所以NodeL里要保存cur的值                              
+
+				if (parent->_left == NodeL)   //这里要判断要删除的节点是父亲的左子树还是父亲的右子树
+				{
+					_RemoveR(parent->_left, key);  //把cur的右子树的最左节点与cur交换后，把最左节点就当成子问题进行删除（左为空的子问题）
+				}
+				else
+				{
+					_RemoveR(parent->_right, key);  //同理
+				}
+			}
+		}
+	}
+
+	void Delete(Node*& cur, Node*& parent)
+	{
+		Node* del = NULL;
+		if (cur->_left == NULL)  //左为空或者左右都为空
+		{
+			del = cur;
+			if (parent == NULL)//这里要注意的是：如果cur当前为根结点且左为空，要删除cur，就不能判断cur是parent的左子树还是右子树，因为此时parent为空
+			{                   //所以直接将cur的右孩子设为根结点
+				_root = cur->_right;
+			}
+			else
+			{
+				if (parent->_left == cur)
+				{
+					parent->_left = cur->_right;
+				}
+				else
+				{
+					parent->_right = cur->_right;
+				}
+			}
+		}
+		else if (cur->_right == NULL)  //右为空
+		{
+			del = cur;
+			if (parent == NULL)        //这里要注意的是：如果cur当前为根结点且右为空，要删除cur，就不能判断cur是parent的左子树还是右子树，因为此时parent为空
+			{                           //所以直接将cur的左孩子设为根结点
+				_root = cur->_left;
+			}
+			else
+			{
+				if (parent->_left == cur)
+				{
+					parent->_left = cur->_left;
+				}
+				else
+				{
+					parent->_right = cur->_left;
+				}
+			}
+		}
+		else
+		{
+			//删除其他节点，用替换法
+			Node* parent = cur;
+			Node* NodeL = cur->_right;
+			while (NodeL->_left)
+			{
+				parent = NodeL;
+				NodeL = NodeL->_left;
+			}
+
+			cur->_key = NodeL->_key;  //把要删除的节点用当前节点右子树的最左节点替换
+
+			if (parent->_left == NodeL)
+			{
+				parent->_left = NodeL->_right;
+			}
+			else
+			{
+				parent->_right = NodeL->_right;
+			}
+			del = NodeL;
+
+		}
+		delete del;
+	}
+
+	void _InOder(Node* root)
+	{
+		if (root == NULL)
+		{
+			return;
+		}
+
+		_InOder(root->_left);
+		cout << root->_key << " ";
+		_InOder(root->_right);
+	}
+
+private:
+	Node* _root;
+};
+
+void TestBSTree()
+{
+	typedef BinarySearchTreeNode<int> Node;
+
+	BinarySearchTree<int> tree;
+	tree.Insert(5);
+	tree.Insert(3);
+	tree.Insert(4);
+	tree.Insert(1);
+	tree.Insert(7);
+	tree.Insert(8);
+	tree.Insert(2);
+	tree.Insert(6);
+	tree.Insert(0);
+	tree.Insert(9);
+	tree.InOder();
+
+
+	tree.RemoveR(5);
+	tree.InOder();
+	tree.RemoveR(1);
+	tree.InOder();
+	tree.RemoveR(2);
+	tree.InOder();
+	tree.RemoveR(3);
+	tree.InOder();
+	tree.RemoveR(4);
+	tree.InOder();
+	tree.RemoveR(6);
+	tree.InOder();
+	tree.RemoveR(7);
+	tree.InOder();
+	tree.RemoveR(8);
+	tree.InOder();
+	tree.RemoveR(9);
+	tree.InOder();
+	tree.RemoveR(0);
+	tree.InOder();
+	tree.RemoveR(9);
+	tree.InOder();
+
+
+
+	Node* ret = tree.Find(5);
+	if (ret != NULL)
+	{
+		cout << ret->_key << endl;
+	}
+}
+
+#endif
