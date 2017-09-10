@@ -1,0 +1,144 @@
+#include<iostream>
+#include<string>
+#include<windows.h>
+using namespace std;
+
+
+class exception {
+public:
+	exception() throw();
+	exception(const exception&) throw();
+	exception& operator= (const exception&) throw();
+	virtual ~exception() throw();
+	virtual const char* what() const throw();
+}
+
+class Exception
+{
+public:
+	Exception(const string& msg, int id)
+		:_errMsg(msg)
+		, _errId(id)
+	{}
+	virtual string what()=0;
+protected:
+	string _errMsg;
+	int _errId;
+};
+
+class connectException : public Exception
+{
+public:
+	connectException(const string& Msg, int id)
+		:Exception(Msg , id)
+	{}
+
+	virtual string what()
+	{
+		string msg = "【数据库错误：】";
+		msg += _errMsg;
+		return msg;
+	}
+};
+
+class getinfoException : public Exception
+{
+public:
+	getinfoException(const string& Msg, int id)
+		:Exception(Msg, id)
+	{}
+	virtual string what()
+	{
+		string msg = "【获取数据数据错误：】";
+		msg += _errMsg;
+		return msg;
+	}
+};
+class echoException : public Exception
+{
+public:
+	echoException(const string& Msg, int id)
+	:Exception(Msg, id)
+	{}
+	virtual string what()
+	{
+		string msg =  "【响应错误：】";
+		msg += _errMsg;
+		return msg;
+	}
+};
+
+void connectsql()
+{
+	if (rand() % 5 == 0)
+	{
+		throw connectException ("数据库连接错误", 1);
+	}
+	if (rand() % 3 == 0)
+	{
+		throw connectException ("网络错误",2);
+	}
+	cout << "【OK 数据库连接成功】" << endl;
+}
+
+void getinfo()
+{
+	if (rand() % 2 == 0)
+	{
+		throw getinfoException("获取数据失败", 101);
+	}
+	if (rand() % 3 == 0)
+	{
+		throw getinfoException("数据处理错误", 102);
+	}
+	cout << "【OK 获取客户端信息成功】" << endl;
+}
+
+void echoclient()
+{
+	if (rand() % 2 == 0)
+	{
+		throw echoException("响应错误", 202);
+	}
+	if (rand() % 3 == 0)
+	{
+		throw echoException("数据丢失", 203);
+	}
+
+
+	cout << "【OK 响应客户端成功】" << endl;
+}
+
+class HTTPserver
+{
+public:
+	void start()
+	{
+		while (1)
+		{
+			try
+			{
+				connectsql();
+				Sleep(1000);
+				getinfo();
+				Sleep(1000);
+				echoclient();
+				Sleep(1000);
+
+			}
+			catch (Exception& e)
+			{
+				cout << e.what() << endl;
+			}
+		}
+	}
+};
+
+int main()
+{
+	HTTPserver h;
+	h.start();
+
+
+	return 0;
+}
