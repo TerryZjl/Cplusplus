@@ -1,0 +1,128 @@
+#include<iostream>
+#include<string>
+#include<assert.h>
+using namespace std;
+
+struct TypeFalse
+{
+	bool Get()
+	{
+		return false;
+	}
+};
+struct TypeTrue
+{
+	bool Get()
+	{
+		return true;
+	}
+};
+
+template<class T>
+struct TypeTraits
+{
+	typedef TypeFalse IsFodType;
+};
+
+template<>
+struct TypeTraits<int>
+{
+	typedef TypeTrue IsFodType;
+};
+template<>
+struct TypeTraits<char>
+{
+	typedef TypeTrue IsFodType;
+};
+template<>
+struct TypeTraits<double>
+{
+	typedef TypeTrue IsFodType;
+};
+
+
+
+//Ë³Ðò±í
+template<typename T>
+class Seqlist
+{
+public:
+	Seqlist()
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{}
+	void _CheckCapacity()
+	{
+		if (_capacity <= _size)
+		{
+			_capacity = _capacity * 2 + 3;
+			if (TypeTraits<T>::IsFodType().Get() == false)
+			{
+				T* tmp = new T[_capacity];
+				memcpy(tmp, _a, sizeof(T)*_size);
+				_a = tmp;
+			}
+		    else
+			{
+				_a = (T*)realloc(_a, sizeof(T)*_capacity);
+			}
+		}
+	}
+	Seqlist(const Seqlist<T>& s)
+		:_a(NULL)
+		, _size(0)
+		, _capacity(0)
+	{
+		while (_size < s._size)
+		{
+			PushBack(s._a[_size]);
+		}
+		_capacity = s._capacity;
+	}
+	void PushBack(const T& x)
+	{
+		_CheckCapacity();
+		_a[_size] = x;
+		_size++;
+	}
+
+	~Seqlist()
+	{
+		if (_a != NULL)
+		{
+			delete[] _a;
+			_size = _capacity = 0;
+			_a = NULL;
+		}
+	}
+
+	void print()
+	{
+		for (int i = 0; i < _size; i++)
+		{
+			cout << _a[i] << endl;
+		}
+	}
+private:
+	T* _a;
+	size_t _size;
+	size_t _capacity;
+};
+
+int main()
+{
+	Seqlist<int> s1;
+    s1.PushBack(2);
+    s1.PushBack(1);
+    s1.PushBack(3);
+    s1.PushBack(4);
+	s1.print();
+	Seqlist<string> s2;
+	s2.PushBack("rrrrrrrrrrrrrrrrrrrrrr");
+	s2.PushBack("qqqq");
+	s2.PushBack("wwww");
+	s2.PushBack("eeee");
+	s2.print();
+	return 0;
+}
