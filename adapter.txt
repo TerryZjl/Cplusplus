@@ -1,0 +1,115 @@
+#include<vector>
+#include<list>
+#include<iostream>
+#include<string>
+#include<assert.h>
+using namespace std;
+
+//栈适配器
+template<typename T, typename Container = vector<T>>   //第二个参数为缺省参数
+class Stack
+{
+public:
+	void Push(const T& x)
+	{
+		_con.push_back(x);
+	}
+
+	void Pop()
+	{
+		_con.pop_back();
+	}
+
+	T& Front()
+	{
+		return _con.front();
+	}
+
+	T& Back()
+	{
+		return _con.back();
+	}
+	size_t size()
+	{
+		return _con.size();
+	}
+	bool Empty()
+	{
+		return _con.empty();
+	}
+private:
+	Container _con;
+};
+
+
+
+void TestStack()
+{
+	Stack<string ,vector<string>> s;
+	s.Push("11");
+	s.Push("22");
+	s.Push("33");
+
+	while (!s.Empty())
+	{
+		cout << s.Back()<<" ";
+		s.Pop();
+	}
+	cout << endl;
+}
+
+
+//队适配器
+template<typename T,typename Container = List<int>>  //第二个参数为缺省参数
+class Queue
+{
+public:
+	void Push(const T& x)
+	{
+		_con.push_back(x);
+	}
+
+	void Pop()
+	{
+		_con.pop_front();
+	}
+
+	T& Front()
+	{
+		return _con.front();
+	}
+	size_t Size()
+	{
+		return _com.size();
+	}
+	bool Empty()
+	{
+		return _con.empty();
+	}
+private:
+	Container _con;
+};
+
+
+void TestQueue()
+{
+	Queue<string, list<string>> s;
+	s.Push("11");
+	s.Push("222222222222222222222222222222222222");
+	s.Push("33");
+
+	while (!s.Empty())
+	{
+		cout << s.Front()<< " ";
+		s.Pop();
+	}
+	cout << endl;
+}
+
+int main()
+{
+	TestStack();
+	TestQueue();
+	return 0;
+}
+
