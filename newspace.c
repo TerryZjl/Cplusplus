@@ -2,7 +2,7 @@
 using namespace std;
 
 
-void test()
+void TestNew()
 {
 	int *p1 = new int;
 	int *p2 = new int(4);
@@ -15,7 +15,7 @@ void test()
 }
 int main()
 {
-	test();
+	TestNew();
 	return 0;
 }
 
