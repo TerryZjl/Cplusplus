@@ -52,6 +52,4 @@ int main()
 	*/
 	A* p4 = new A[3];
 	delete[] p4;
-
-	return 0;
 }
