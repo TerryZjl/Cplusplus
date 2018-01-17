@@ -8,10 +8,6 @@ public:
 		N++;
 	    SUM += N;
 	}
-	//int GetSum()
-	//{
-	//	return SUM;
-	//}
 public:
 	static int N;
 	static int SUM;
